@@ -1,24 +1,25 @@
 package org.nguyen.orderjava.services;
 
+import static org.nguyen.orderjava.literals.Services.ORDER_REPO_SERVICE;
+
 import java.util.Optional;
 
-import org.nguyen.orderjava.repositories.OrderRepository;
 import org.nguyen.orderjava.models.jpa.OrderEntry;
+import org.nguyen.orderjava.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
-public class OrderServiceImpl implements OrderService {
+@Service(ORDER_REPO_SERVICE)
+public class OrderRepoService {
 
     private final OrderRepository orderRepo;
 
     @Autowired
-    OrderServiceImpl(OrderRepository orderRepository) {
+    OrderRepoService(OrderRepository orderRepository) {
         this.orderRepo = orderRepository;
     }
 
-    @Override
-    public OrderEntry getOrderById(String id) {
+    public OrderEntry findOrderById(String id) {
         OrderEntry orderEntry = null;
         Optional<OrderEntry> entry = orderRepo.findById(id);
 
@@ -29,12 +30,10 @@ public class OrderServiceImpl implements OrderService {
         return orderEntry;
     }
 
-    @Override
     public void deleteOrderById(String id) {
         // TODO Auto-generated method stub
     }
 
-    @Override
     public void updateOrderById(String id) {
         // TODO Auto-generated method stub
     }

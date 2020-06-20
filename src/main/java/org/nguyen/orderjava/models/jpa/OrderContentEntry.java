@@ -8,12 +8,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "ORDER_CONTENT")
 public class OrderContentEntry {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @Column(name = "ID")
     private String id;
 
     @Column(name = "BEAN_TYPE")
@@ -60,5 +64,31 @@ public class OrderContentEntry {
 
     public void removeOrderEntry() {
         this.orderEntry = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof OrderContentEntry) {
+            OrderContentEntry suspect = (OrderContentEntry) o;
+            return isEveryPropertyEqual(suspect);
+        }
+        else {
+            return false;
+        }
+    }
+
+    private boolean isEveryPropertyEqual(OrderContentEntry suspect) {
+        return isEqual(this.id, suspect.getId()) &&
+            isEqual(this.beanType, suspect.getBeanType()) &&
+            isEqual(this.quantity, suspect.getQuantity());
+    }
+
+    private boolean isEqual(Object expected, Object suspect) {
+        if (expected != null) {
+            return expected.equals(suspect);
+        }
+        else {
+            return expected == suspect;
+        }
     }
 }

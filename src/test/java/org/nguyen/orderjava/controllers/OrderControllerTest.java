@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.nguyen.orderjava.exceptions.OrderNotFoundException;
 import org.nguyen.orderjava.models.OrderData;
+import org.nguyen.orderjava.models.OrderUpdateData;
 import org.nguyen.orderjava.models.jpa.OrderEntry;
 import org.nguyen.orderjava.repositories.InventoryRepository;
 import org.nguyen.orderjava.repositories.OrderRepository;
@@ -50,6 +51,7 @@ public class OrderControllerTest {
     @Test
     void getOrderById_ShouldReturnOrderData_GivenOrderExists() throws OrderNotFoundException {
         OrderEntry mock = new OrderEntry();
+
         mock.setId("test");
         
         when(orderRepo.findById(any())).thenReturn(Optional.of(mock));
@@ -102,6 +104,51 @@ public class OrderControllerTest {
             .assertThat()
             .statusCode(200)
             .body("id", equalTo("test"))
+            .contentType("application/json");
+    }
+
+    @Test
+    void updateOrder_ShouldUpdateAnExistingOrderAndThenSaveTheChange_GivenAnExistingOrderExists() {
+        OrderUpdateData mock = new OrderUpdateData();
+        OrderEntry mockOrderEntry = new OrderEntry();
+
+        mock.setBeanAdditions(new ArrayList<>());
+        mock.setBeanDeletions(new ArrayList<>());
+        mock.setBeanUpdates(new ArrayList<>());
+        mockOrderEntry.setId("test");
+
+        when(orderRepo.save(any())).thenReturn(mockOrderEntry);
+        when(orderRepo.findById("test")).thenReturn(Optional.of(mockOrderEntry));
+
+        given()
+            .port(portNumber)
+            .request().body(mock)
+            .contentType("application/json")
+        .when()
+            .patch("/order/test")
+        .then()
+            .assertThat()
+            .statusCode(200)
+            .body("id", equalTo("test"))
+            .contentType("application/json");
+    }
+
+    @Test
+    void updateOrder_ShouldReturnNotFoundException_GivenAnExistingOrderEntryIsNotFound() {
+        OrderUpdateData mock = new OrderUpdateData();
+        when(orderRepo.findById("test")).thenReturn(Optional.ofNullable(null));
+
+        given()
+            .port(portNumber)
+            .request().body(mock)
+            .contentType("application/json")
+        .when()
+            .patch("/order/test")
+        .then()
+            .assertThat()
+            .statusCode(404)
+            .body("error", equalTo("Not Found"))
+            .body("message", equalTo("Order 'test' Not Found"))
             .contentType("application/json");
     }
 }

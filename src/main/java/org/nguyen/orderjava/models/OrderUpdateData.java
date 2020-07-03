@@ -5,15 +5,33 @@ import java.util.Date;
 import java.util.List;
 
 public class OrderUpdateData {
-    private List<OrderContentData> beans;
+    private List<OrderContentData> beanAdditions;
+    private List<OrderContentData> beanDeletions;
+    private List<OrderContentData> beanUpdates;
     private Date changeDate;
 
-    public List<OrderContentData> getBeans() {
-        return beans;
+    public List<OrderContentData> getBeanAdditions() {
+        return beanAdditions;
     }
 
-    public void setBeans(List<OrderContentData> beans) {
-        this.beans = beans;
+    public void setBeanAdditions(List<OrderContentData> beanAdditions) {
+        this.beanAdditions = beanAdditions;
+    }
+
+    public List<OrderContentData> getBeanDeletions() {
+        return beanDeletions;
+    }
+
+    public void setBeanDeletions(List<OrderContentData> beanDeletions) {
+        this.beanDeletions = beanDeletions;
+    }
+
+    public List<OrderContentData> getBeanUpdates() {
+        return beanUpdates;
+    }
+
+    public void setBeanUpdates(List<OrderContentData> beanUpdates) {
+        this.beanUpdates = beanUpdates;
     }
 
     public Date getChangeDate() {

@@ -24,12 +24,18 @@ paths:
       tags:
         - order
       responses:
-        '200':    # status code
+        '200':
           description: A JSON object containing the order.
           content:
             application/json:
               schema: 
                 $ref: '#/components/schemas/OrderData'
+        '404':
+          description: No order exists for the provided order ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderNotFoundException'
     post:
       summary: Creates an order.
       tags:
@@ -42,7 +48,7 @@ paths:
             schema: 
               $ref: '#/components/schemas/OrderData'
       responses:
-        '200':    # status code
+        '200':
           description: A JSON object containing the order ID.
           content:
             application/json:
@@ -51,6 +57,40 @@ paths:
                 properties:
                   id:
                     type: string
+  /order/{id}:
+    patch:
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      summary: Updates an existing order.
+      tags:
+        - order
+      requestBody:
+        description: Information about the updates to be made to the order.
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/OrderUpdate'
+      responses:
+        '200':
+          description: A JSON object containing the order ID.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  id:
+                    type: string
+        '404':
+            description: No order exists for the provided order ID.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/OrderNotFoundException'
   /inventory/bean:
     get:
       parameters:
@@ -124,3 +164,33 @@ components:
         beanType:
           type: string
           enum: [ ARABICA, ROBUSTA, LIBERIAN, EXCELSA ]
+    OrderUpdate:
+      type: object
+      properties:
+        beanAdditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderContent'
+        beanDeletions:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderContent'
+        beanUpdates:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderContent'
+        changeDate:
+          type: string
+    OrderNotFoundException:
+      type: object
+      properties:
+        timestamp:
+          type: string
+        status:
+          type: number
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string

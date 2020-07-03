@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.nguyen.orderjava.exceptions.OrderNotFoundException;
 import org.nguyen.orderjava.models.BeanType;
 import org.nguyen.orderjava.models.OrderData;
+import org.nguyen.orderjava.models.OrderUpdateData;
 import org.nguyen.orderjava.models.jpa.InventoryEntry;
 import org.nguyen.orderjava.models.jpa.OrderEntry;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -97,11 +98,59 @@ public class OrderServiceTest {
 
         when(orderRepoService.saveOrder(any())).thenReturn(mock);
         when(inventoryRepoService.findAllEntries()).thenReturn(mockInventoryList());
-        when(orderMapperService.mapOrderDataToOrderEntry(any(), any())).thenReturn(mock);
+        when(orderMapperService.mapOrderDataToOrderEntry(any())).thenReturn(mock);
 
         String result = orderService.saveOrder(new OrderData());
 
         assertEquals("test", result);
+    }
+
+    @Test
+    void updateOrder_ShouldUpdateAnExistingOrderEntry_GivenOrderUpdateDataExists() throws OrderNotFoundException {
+        OrderEntry mock = mockOrderEntry();
+        OrderUpdateData mockUpdateData = new OrderUpdateData();
+
+        when(orderRepoService.findOrderById("test")).thenReturn(mock);
+        when(orderMapperService.updateOrderEntry(any(), any())).thenReturn(mock);
+        when(orderRepoService.saveOrder(any())).thenReturn(mock);
+
+        orderService.updateOrder("test", mockUpdateData);
+        
+        verify(orderMapperService, times(1)).updateOrderEntry(mock, mockUpdateData);
+    }
+
+    @Test
+    void updateOrder_ShouldReturnAnId_GivenSaveOperationSucceeded() throws OrderNotFoundException {
+        OrderEntry mock = mockOrderEntry();
+        OrderUpdateData mockUpdateData = new OrderUpdateData();
+
+        when(orderRepoService.findOrderById("test")).thenReturn(mock);
+        when(orderMapperService.updateOrderEntry(any(), any())).thenReturn(mock);
+        when(orderRepoService.saveOrder(any())).thenReturn(mock);
+
+        String result = orderService.updateOrder("test", mockUpdateData);
+
+        assertEquals("test", result);
+    }
+
+    @Test
+    void updateOrder_ShouldThrowAnException_GivenNoOrderEntryExists() {
+        OrderNotFoundException error = null;
+        OrderUpdateData mockUpdateData = new OrderUpdateData();
+
+        when(orderRepoService.findOrderById("test")).thenReturn(null);
+
+        try {
+            orderService.updateOrder("test", mockUpdateData);
+        }
+        catch (OrderNotFoundException ex) {
+            error = ex;
+        }
+        
+        assertEquals(
+            new OrderNotFoundException("test").getMessage(),
+            error.getMessage()
+        );
     }
 
     private OrderEntry mockOrderEntry() {

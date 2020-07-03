@@ -2,8 +2,8 @@ package org.nguyen.orderjava.exceptions;
 
 public class OrderNotFoundException extends Exception {
 
-    public OrderNotFoundException() {
-        super("Order Not Found");
+    public OrderNotFoundException(String orderId) {
+        super("Order '" + orderId + "' Not Found");
 	}
 
 	/**

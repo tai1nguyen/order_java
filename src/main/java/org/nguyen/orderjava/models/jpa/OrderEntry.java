@@ -8,10 +8,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.nguyen.orderjava.models.BeanType;
 
 @Entity
 @Table(name = "ORDERS")
@@ -26,7 +28,8 @@ public class OrderEntry {
     @Column(name = "ORDERED_BY")
     private String orderedBy;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderEntry", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ORDER_ID", nullable = false)
     List<OrderContentEntry> beans = new ArrayList<OrderContentEntry>();
 
     public String getId() {
@@ -50,13 +53,15 @@ public class OrderEntry {
     }
 
     public void addBean(OrderContentEntry bean) {
-        bean.setOrderEntry(this);
         this.beans.add(bean);
     }
 
-    public void removeBean(OrderContentEntry bean) {
+    public void removeBean(BeanType type) {
+        OrderContentEntry bean = findMatchingContentEntry(
+            type.getName(), this.beans
+        );
+
         this.beans.remove(bean);
-        bean.removeOrderEntry();
     }
 
     @Override

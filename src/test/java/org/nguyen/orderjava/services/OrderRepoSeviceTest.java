@@ -25,7 +25,7 @@ public class OrderRepoSeviceTest {
     OrderRepository orderRepo;
 
     @Test
-    public void findOrderById_ShouldReturnAnOrderEntry_GivenAnOrderEntryForTheIDExists() {
+    void findOrderById_ShouldReturnAnOrderEntry_GivenAnOrderEntryForTheIDExists() {
         OrderEntry expected = new OrderEntry();
         expected.setId("1");
 
@@ -37,7 +37,7 @@ public class OrderRepoSeviceTest {
     }
 
     @Test
-    public void findOrderById_ShouldReturnNull_GivenOrderEntryForTheIDDoesNotExist() {
+    void findOrderById_ShouldReturnNull_GivenOrderEntryForTheIDDoesNotExist() {
         Optional<OrderEntry> mock = Optional.ofNullable(null);
 
         when(orderRepo.findById("1")).thenReturn(mock);
@@ -48,7 +48,7 @@ public class OrderRepoSeviceTest {
     }
 
     @Test
-    public void saveOrder_ShouldReturnAnOrderEntry_GivenTheSaveOperationSucceeded() {
+    void saveOrder_ShouldReturnAnOrderEntry_GivenTheSaveOperationSucceeded() {
         OrderEntry mock = new OrderEntry();
 
         when(orderRepo.save(any())).thenReturn(mock);

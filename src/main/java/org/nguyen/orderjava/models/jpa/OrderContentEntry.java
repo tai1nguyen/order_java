@@ -4,8 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -25,10 +23,6 @@ public class OrderContentEntry {
 
     @Column(name = "QUANTITY")
     private String quantity;
-
-    @ManyToOne
-    @JoinColumn(name = "ORDER_ID", nullable = false)
-    private OrderEntry orderEntry;
 
     public String getId() {
         return id;
@@ -52,18 +46,6 @@ public class OrderContentEntry {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
-    }
-
-    public OrderEntry getOrderEntry() {
-        return orderEntry;
-    }
-
-    public void setOrderEntry(OrderEntry orderEntry) {
-        this.orderEntry = orderEntry;
-    }
-
-    public void removeOrderEntry() {
-        this.orderEntry = null;
     }
 
     @Override

@@ -132,4 +132,23 @@ public class OrderControllerTest {
             .body("id", equalTo("test"))
             .contentType("application/json");
     }
+
+    @Test
+    void updateOrder_ShouldReturnNotFoundException_GivenAnExistingOrderEntryIsNotFound() {
+        OrderUpdateData mock = new OrderUpdateData();
+        when(orderRepo.findById("test")).thenReturn(Optional.ofNullable(null));
+
+        given()
+            .port(portNumber)
+            .request().body(mock)
+            .contentType("application/json")
+        .when()
+            .patch("/order/test")
+        .then()
+            .assertThat()
+            .statusCode(404)
+            .body("error", equalTo("Not Found"))
+            .body("message", equalTo("Order 'test' Not Found"))
+            .contentType("application/json");
+    }
 }

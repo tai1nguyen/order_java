@@ -9,13 +9,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.nguyen.orderjava.models.BeanType;
-import org.nguyen.orderjava.models.OrderContentData;
-import org.nguyen.orderjava.models.OrderData;
-import org.nguyen.orderjava.models.OrderUpdateData;
-import org.nguyen.orderjava.models.jpa.InventoryEntry;
-import org.nguyen.orderjava.models.jpa.OrderContentEntry;
-import org.nguyen.orderjava.models.jpa.OrderEntry;
+import org.nguyen.orderjava.models.BeanTypeEnum;
+import org.nguyen.orderjava.models.dto.OrderContentDto;
+import org.nguyen.orderjava.models.dto.OrderDto;
+import org.nguyen.orderjava.models.dto.OrderUpdateDto;
+import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
+import org.nguyen.orderjava.models.jpa.OrderContentJpa;
+import org.nguyen.orderjava.models.jpa.OrderEntryJpa;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -26,59 +26,59 @@ public class OrderMapperServiceTest {
 
     @Test
     void mapOrderEntryToOrderData_ShouldReturnOrderData_GivenOrderEntryAndBeanData() {
-        OrderData expectedOrder = mockOrderData();
-        List<OrderContentData> expectedOrderBeans = new ArrayList<>();
-        OrderEntry mockOrderEntry = mockOrderEntry("1");
+        OrderDto expectedOrder = mockOrderData();
+        List<OrderContentDto> expectedOrderBeans = new ArrayList<>();
+        OrderEntryJpa mockOrderEntry = mockOrderEntry("1");
 
-        expectedOrderBeans.add(mockOrderContentData(BeanType.ARABICA, "1"));
+        expectedOrderBeans.add(mockOrderContentData(BeanTypeEnum.ARABICA, "1"));
         expectedOrder.setBeans(expectedOrderBeans);
-        mockOrderEntry.addBean(mockOrderContentEntry(BeanType.ARABICA, "1"));
+        mockOrderEntry.addBean(mockOrderContentEntry(BeanTypeEnum.ARABICA, "1"));
 
-        OrderData result = orderMapperService.mapOrderEntryToOrderData("1", mockOrderEntry, mockBeans());
+        OrderDto result = orderMapperService.mapOrderEntryToOrderData("1", mockOrderEntry, mockBeans());
 
         assertEquals(expectedOrder, result);
     }
 
     @Test
     void mapOrderDataToOrderEntry_ShouldReturnOrderEntry_GivenOrderDataAndBeanData() {
-        OrderEntry expectedOrderEntry = mockOrderEntry(null);
-        OrderData mockOrderData = mockOrderData();
-        List<OrderContentData> mockOrderDataBeans = new ArrayList<>();
+        OrderEntryJpa expectedOrderEntry = mockOrderEntry(null);
+        OrderDto mockOrderData = mockOrderData();
+        List<OrderContentDto> mockOrderDataBeans = new ArrayList<>();
 
-        expectedOrderEntry.addBean(mockOrderContentEntry(BeanType.ARABICA, "1"));
-        mockOrderDataBeans.add(mockOrderContentData(BeanType.ARABICA, "1"));
+        expectedOrderEntry.addBean(mockOrderContentEntry(BeanTypeEnum.ARABICA, "1"));
+        mockOrderDataBeans.add(mockOrderContentData(BeanTypeEnum.ARABICA, "1"));
         mockOrderData.setBeans(mockOrderDataBeans);
 
-        OrderEntry result = orderMapperService.mapOrderDataToOrderEntry(mockOrderData);
+        OrderEntryJpa result = orderMapperService.mapOrderDataToOrderEntry(mockOrderData);
 
         assertEquals(expectedOrderEntry, result);
     }
 
     @Test
     void updateOrderEntry_ShouldUpdateAnOrderEntryWithOrderUpdateData_GivenOrderUpdateData() {
-        OrderEntry mock = mockOrderEntry("1");
-        OrderEntry expected = mockOrderEntry("1");
-        OrderUpdateData udpateData = mockOrderUpdateData();
+        OrderEntryJpa mock = mockOrderEntry("1");
+        OrderEntryJpa expected = mockOrderEntry("1");
+        OrderUpdateDto udpateData = mockOrderUpdateData();
 
-        mock.addBean(mockOrderContentEntry(BeanType.ARABICA, "1"));
-        mock.addBean(mockOrderContentEntry(BeanType.EXCELSA, "2"));
-        expected.addBean(mockOrderContentEntry(BeanType.EXCELSA, "4"));
-        expected.addBean(mockOrderContentEntry(BeanType.LIBERIAN, "3"));
+        mock.addBean(mockOrderContentEntry(BeanTypeEnum.ARABICA, "1"));
+        mock.addBean(mockOrderContentEntry(BeanTypeEnum.EXCELSA, "2"));
+        expected.addBean(mockOrderContentEntry(BeanTypeEnum.EXCELSA, "4"));
+        expected.addBean(mockOrderContentEntry(BeanTypeEnum.LIBERIAN, "3"));
 
-        OrderEntry result = orderMapperService.updateOrderEntry(mock, udpateData);
+        OrderEntryJpa result = orderMapperService.updateOrderEntry(mock, udpateData);
 
         assertEquals(expected, result);
     }
 
-    private OrderUpdateData mockOrderUpdateData() {
-        OrderUpdateData mock = new OrderUpdateData();
-        List<OrderContentData> additions = new ArrayList<>();
-        List<OrderContentData> deletions = new ArrayList<>();
-        List<OrderContentData> updates = new ArrayList<>();
+    private OrderUpdateDto mockOrderUpdateData() {
+        OrderUpdateDto mock = new OrderUpdateDto();
+        List<OrderContentDto> additions = new ArrayList<>();
+        List<OrderContentDto> deletions = new ArrayList<>();
+        List<OrderContentDto> updates = new ArrayList<>();
         
-        additions.add(mockOrderContentData(BeanType.LIBERIAN, "3"));
-        deletions.add(mockOrderContentData(BeanType.ARABICA, null));
-        updates.add(mockOrderContentData(BeanType.EXCELSA, "4"));
+        additions.add(mockOrderContentData(BeanTypeEnum.LIBERIAN, "3"));
+        deletions.add(mockOrderContentData(BeanTypeEnum.ARABICA, null));
+        updates.add(mockOrderContentData(BeanTypeEnum.EXCELSA, "4"));
 
         mock.setBeanAdditions(additions);
         mock.setBeanDeletions(deletions);
@@ -87,8 +87,8 @@ public class OrderMapperServiceTest {
         return mock;
     }
 
-    private OrderContentData mockOrderContentData(BeanType type, String quantity) {
-        OrderContentData mock = new OrderContentData();
+    private OrderContentDto mockOrderContentData(BeanTypeEnum type, String quantity) {
+        OrderContentDto mock = new OrderContentDto();
 
         mock.setBeanType(type);
         
@@ -99,8 +99,8 @@ public class OrderMapperServiceTest {
         return mock;
     }
 
-    private OrderData mockOrderData() {
-        OrderData mock = new OrderData();
+    private OrderDto mockOrderData() {
+        OrderDto mock = new OrderDto();
 
         mock.setId("1");
         mock.setPrice(new BigDecimal("1.05"));
@@ -109,8 +109,8 @@ public class OrderMapperServiceTest {
         return mock;
     }
 
-    private OrderEntry mockOrderEntry(String id) {
-        OrderEntry mock = new OrderEntry();
+    private OrderEntryJpa mockOrderEntry(String id) {
+        OrderEntryJpa mock = new OrderEntryJpa();
 
         if (id != null) {
             mock.setId(id);
@@ -121,8 +121,8 @@ public class OrderMapperServiceTest {
         return mock;
     }
 
-    private OrderContentEntry mockOrderContentEntry(BeanType type, String quantity) {
-        OrderContentEntry mock = new OrderContentEntry();
+    private OrderContentJpa mockOrderContentEntry(BeanTypeEnum type, String quantity) {
+        OrderContentJpa mock = new OrderContentJpa();
 
         mock.setBeanType(type.getName());
         mock.setQuantity(quantity);
@@ -130,10 +130,10 @@ public class OrderMapperServiceTest {
         return mock;
     }
 
-    private InventoryEntry mockBeanData() {
-        InventoryEntry mock = new InventoryEntry();
+    private InventoryEntryJpa mockBeanData() {
+        InventoryEntryJpa mock = new InventoryEntryJpa();
 
-        mock.setBeanType(BeanType.ARABICA);
+        mock.setBeanType(BeanTypeEnum.ARABICA);
         mock.setPricePerUnit("1.05");
         mock.setQuantity("10");
         mock.setWeightPerUnit("0.05");
@@ -141,8 +141,8 @@ public class OrderMapperServiceTest {
         return mock;
     }
 
-    private List<InventoryEntry> mockBeans() {
-        List<InventoryEntry> mock = new ArrayList<>();
+    private List<InventoryEntryJpa> mockBeans() {
+        List<InventoryEntryJpa> mock = new ArrayList<>();
 
         mock.add(mockBeanData());
 

@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.nguyen.orderjava.exceptions.OrderNotFoundException;
-import org.nguyen.orderjava.models.OrderData;
-import org.nguyen.orderjava.models.OrderUpdateData;
+import org.nguyen.orderjava.models.dto.OrderDto;
+import org.nguyen.orderjava.models.dto.OrderUpdateDto;
 import org.nguyen.orderjava.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,12 +30,12 @@ public class OrderController {
     }
 
     @GetMapping
-    public OrderData getOrderById(@RequestParam String id) throws OrderNotFoundException {
+    public OrderDto getOrderById(@RequestParam String id) throws OrderNotFoundException {
         return orderService.getOrderById(id);
     }
 
     @PostMapping
-    public Map<String, String> createOrder(@RequestBody OrderData data) {
+    public Map<String, String> createOrder(@RequestBody OrderDto data) {
         String orderId = orderService.saveOrder(data);
 
         return getResponseJson("id", orderId);
@@ -44,7 +44,7 @@ public class OrderController {
     @PatchMapping("/{id}")
     public Map<String, String> updateOrder(
         @PathVariable String id,
-        @RequestBody OrderUpdateData update
+        @RequestBody OrderUpdateDto update
     ) throws OrderNotFoundException {
         String orderId = orderService.updateOrder(id, update);
 

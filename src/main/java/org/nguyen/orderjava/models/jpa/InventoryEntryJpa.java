@@ -5,11 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.nguyen.orderjava.models.BeanType;
+import org.nguyen.orderjava.models.BeanTypeEnum;
 
 @Entity
 @Table(name = "INVENTORY")
-public class InventoryEntry {
+public class InventoryEntryJpa {
 
     @Id
     @Column(name="BEAN_TYPE")
@@ -24,11 +24,11 @@ public class InventoryEntry {
     @Column(name="QUANTITY")
     private String quantity;
 
-    public BeanType getBeanType() {
-        return BeanType.getType(beanType);
+    public BeanTypeEnum getBeanType() {
+        return BeanTypeEnum.getType(beanType);
     }
 
-    public void setBeanType(BeanType beanType) {
+    public void setBeanType(BeanTypeEnum beanType) {
         this.beanType = beanType.getName();
     }
 

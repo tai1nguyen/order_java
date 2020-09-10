@@ -1,14 +1,16 @@
-package org.nguyen.orderjava.models;
+package org.nguyen.orderjava.models.dto;
 
-public class OrderContentData {
-    private BeanType beanType;
+import org.nguyen.orderjava.models.BeanTypeEnum;
+
+public class OrderContentDto {
+    private BeanTypeEnum beanType;
     private Integer quantity;
 
-    public BeanType getBeanType() {
+    public BeanTypeEnum getBeanType() {
         return beanType;
     }
 
-    public void setBeanType(BeanType beanType) {
+    public void setBeanType(BeanTypeEnum beanType) {
         this.beanType = beanType;
     }
 
@@ -22,8 +24,8 @@ public class OrderContentData {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof OrderContentData) {
-            OrderContentData suspect = (OrderContentData) o;
+        if (o instanceof OrderContentDto) {
+            OrderContentDto suspect = (OrderContentDto) o;
             return isEveryPropertyEqual(suspect);
         }
         else {
@@ -31,7 +33,7 @@ public class OrderContentData {
         }
     }
 
-    private boolean isEveryPropertyEqual(OrderContentData suspect) {
+    private boolean isEveryPropertyEqual(OrderContentDto suspect) {
         return isEqual(this.beanType, suspect.getBeanType()) &&
             isEqual(this.quantity, suspect.getQuantity());
     }

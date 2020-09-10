@@ -10,7 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "ORDER_CONTENT")
-public class OrderContentEntry {
+public class OrderContentJpa {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -50,8 +50,8 @@ public class OrderContentEntry {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof OrderContentEntry) {
-            OrderContentEntry suspect = (OrderContentEntry) o;
+        if (o instanceof OrderContentJpa) {
+            OrderContentJpa suspect = (OrderContentJpa) o;
             return isEveryPropertyEqual(suspect);
         }
         else {
@@ -59,7 +59,7 @@ public class OrderContentEntry {
         }
     }
 
-    private boolean isEveryPropertyEqual(OrderContentEntry suspect) {
+    private boolean isEveryPropertyEqual(OrderContentJpa suspect) {
         return isEqual(this.id, suspect.getId()) &&
             isEqual(this.beanType, suspect.getBeanType()) &&
             isEqual(this.quantity, suspect.getQuantity());

@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.nguyen.orderjava.exceptions.OrderNotFoundException;
-import org.nguyen.orderjava.models.OrderData;
-import org.nguyen.orderjava.models.OrderUpdateData;
-import org.nguyen.orderjava.models.jpa.OrderEntry;
+import org.nguyen.orderjava.models.dto.OrderDto;
+import org.nguyen.orderjava.models.dto.OrderUpdateDto;
+import org.nguyen.orderjava.models.jpa.OrderEntryJpa;
 import org.nguyen.orderjava.repositories.InventoryRepository;
 import org.nguyen.orderjava.repositories.OrderRepository;
 import org.nguyen.orderjava.services.OrderMapperService;
@@ -51,7 +51,7 @@ public class OrderControllerTest {
 
     @Test
     void getOrderById_ShouldReturnOrderData_GivenOrderExists() throws OrderNotFoundException {
-        OrderEntry mock = new OrderEntry();
+        OrderEntryJpa mock = new OrderEntryJpa();
 
         mock.setId("test");
         
@@ -86,8 +86,8 @@ public class OrderControllerTest {
 
     @Test
     void createOrder_ShouldInsertAnOrderEntryIntoTheDatabase_GivenOrderDataIsProvided() {
-        OrderData mock = new OrderData();
-        OrderEntry mockResponse = new OrderEntry();
+        OrderDto mock = new OrderDto();
+        OrderEntryJpa mockResponse = new OrderEntryJpa();
 
         mock.setPrice(new BigDecimal(100));
         mock.setBeans(new ArrayList<>());
@@ -110,8 +110,8 @@ public class OrderControllerTest {
 
     @Test
     void updateOrder_ShouldUpdateAnExistingOrderAndThenSaveTheChange_GivenAnExistingOrderExists() {
-        OrderUpdateData mock = new OrderUpdateData();
-        OrderEntry mockOrderEntry = new OrderEntry();
+        OrderUpdateDto mock = new OrderUpdateDto();
+        OrderEntryJpa mockOrderEntry = new OrderEntryJpa();
 
         mock.setBeanAdditions(new ArrayList<>());
         mock.setBeanDeletions(new ArrayList<>());
@@ -136,7 +136,7 @@ public class OrderControllerTest {
 
     @Test
     void updateOrder_ShouldReturnNotFoundException_GivenAnExistingOrderEntryIsNotFound() {
-        OrderUpdateData mock = new OrderUpdateData();
+        OrderUpdateDto mock = new OrderUpdateDto();
         when(orderRepo.findById("test")).thenReturn(Optional.ofNullable(null));
 
         given()

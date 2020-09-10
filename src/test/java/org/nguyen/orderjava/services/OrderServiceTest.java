@@ -17,11 +17,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.nguyen.orderjava.exceptions.OrderNotFoundException;
-import org.nguyen.orderjava.models.BeanType;
-import org.nguyen.orderjava.models.OrderData;
-import org.nguyen.orderjava.models.OrderUpdateData;
-import org.nguyen.orderjava.models.jpa.InventoryEntry;
-import org.nguyen.orderjava.models.jpa.OrderEntry;
+import org.nguyen.orderjava.models.BeanTypeEnum;
+import org.nguyen.orderjava.models.dto.OrderDto;
+import org.nguyen.orderjava.models.dto.OrderUpdateDto;
+import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
+import org.nguyen.orderjava.models.jpa.OrderEntryJpa;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -62,8 +62,8 @@ public class OrderServiceTest {
 
     @Test
     void getOrderById_ShouldCallMapperServiceWithBeanAndOrderData_GivenOrderId() throws OrderNotFoundException {
-        OrderEntry mockOrderEntry = mockOrderEntry();
-        List<InventoryEntry> mockInventoryList = mockInventoryList();
+        OrderEntryJpa mockOrderEntry = mockOrderEntry();
+        List<InventoryEntryJpa> mockInventoryList = mockInventoryList();
 
         when(orderRepoService.findOrderById("test")).thenReturn(mockOrderEntry);
         when(inventoryRepoService.findAllEntries()).thenReturn(mockInventoryList);
@@ -94,21 +94,21 @@ public class OrderServiceTest {
 
     @Test
     void saveOrder_ShouldReturnAnId_GivenSaveOperationSucceeded() {
-        OrderEntry mock = mockOrderEntry();
+        OrderEntryJpa mock = mockOrderEntry();
 
         when(orderRepoService.saveOrder(any())).thenReturn(mock);
         when(inventoryRepoService.findAllEntries()).thenReturn(mockInventoryList());
         when(orderMapperService.mapOrderDataToOrderEntry(any())).thenReturn(mock);
 
-        String result = orderService.saveOrder(new OrderData());
+        String result = orderService.saveOrder(new OrderDto());
 
         assertEquals("test", result);
     }
 
     @Test
     void updateOrder_ShouldUpdateAnExistingOrderEntry_GivenOrderUpdateDataExists() throws OrderNotFoundException {
-        OrderEntry mock = mockOrderEntry();
-        OrderUpdateData mockUpdateData = new OrderUpdateData();
+        OrderEntryJpa mock = mockOrderEntry();
+        OrderUpdateDto mockUpdateData = new OrderUpdateDto();
 
         when(orderRepoService.findOrderById("test")).thenReturn(mock);
         when(orderMapperService.updateOrderEntry(any(), any())).thenReturn(mock);
@@ -121,8 +121,8 @@ public class OrderServiceTest {
 
     @Test
     void updateOrder_ShouldReturnAnId_GivenSaveOperationSucceeded() throws OrderNotFoundException {
-        OrderEntry mock = mockOrderEntry();
-        OrderUpdateData mockUpdateData = new OrderUpdateData();
+        OrderEntryJpa mock = mockOrderEntry();
+        OrderUpdateDto mockUpdateData = new OrderUpdateDto();
 
         when(orderRepoService.findOrderById("test")).thenReturn(mock);
         when(orderMapperService.updateOrderEntry(any(), any())).thenReturn(mock);
@@ -136,7 +136,7 @@ public class OrderServiceTest {
     @Test
     void updateOrder_ShouldThrowAnException_GivenNoOrderEntryExists() {
         OrderNotFoundException error = null;
-        OrderUpdateData mockUpdateData = new OrderUpdateData();
+        OrderUpdateDto mockUpdateData = new OrderUpdateDto();
 
         when(orderRepoService.findOrderById("test")).thenReturn(null);
 
@@ -165,26 +165,26 @@ public class OrderServiceTest {
         assertNotNull(error);
     }
 
-    private OrderEntry mockOrderEntry() {
-        OrderEntry mock = new OrderEntry();
+    private OrderEntryJpa mockOrderEntry() {
+        OrderEntryJpa mock = new OrderEntryJpa();
 
         mock.setId("test");
 
         return mock;
     }
 
-    private List<InventoryEntry> mockInventoryList() {
-        List<InventoryEntry> mock = new ArrayList<>();
+    private List<InventoryEntryJpa> mockInventoryList() {
+        List<InventoryEntryJpa> mock = new ArrayList<>();
 
         mock.add(mockInventoryEntry());
 
         return mock;
     }
 
-    private InventoryEntry mockInventoryEntry() {
-        InventoryEntry mock = new InventoryEntry();
+    private InventoryEntryJpa mockInventoryEntry() {
+        InventoryEntryJpa mock = new InventoryEntryJpa();
 
-        mock.setBeanType(BeanType.ARABICA);
+        mock.setBeanType(BeanTypeEnum.ARABICA);
 
         return mock;
     }

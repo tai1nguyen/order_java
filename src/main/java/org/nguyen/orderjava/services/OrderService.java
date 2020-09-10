@@ -5,10 +5,10 @@ import static org.nguyen.orderjava.literals.Services.ORDER_SERVICE;
 import java.util.List;
 
 import org.nguyen.orderjava.exceptions.OrderNotFoundException;
-import org.nguyen.orderjava.models.OrderData;
-import org.nguyen.orderjava.models.OrderUpdateData;
-import org.nguyen.orderjava.models.jpa.InventoryEntry;
-import org.nguyen.orderjava.models.jpa.OrderEntry;
+import org.nguyen.orderjava.models.dto.OrderDto;
+import org.nguyen.orderjava.models.dto.OrderUpdateDto;
+import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
+import org.nguyen.orderjava.models.jpa.OrderEntryJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -33,11 +33,11 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderData getOrderById(String id) throws OrderNotFoundException {
-        OrderEntry orderEntry = orderRepoService.findOrderById(id);
+    public OrderDto getOrderById(String id) throws OrderNotFoundException {
+        OrderEntryJpa orderEntry = orderRepoService.findOrderById(id);
 
         if (orderEntry != null) {
-            List<InventoryEntry> beanData = inventoryRepoService.findAllEntries();
+            List<InventoryEntryJpa> beanData = inventoryRepoService.findAllEntries();
 
             return orderMapperService.mapOrderEntryToOrderData(id, orderEntry, beanData);
         }
@@ -47,11 +47,11 @@ public class OrderService {
     }
 
     @Transactional
-    public String updateOrder(String id, OrderUpdateData update) throws OrderNotFoundException {
-        OrderEntry orderEntry = orderRepoService.findOrderById(id);
+    public String updateOrder(String id, OrderUpdateDto update) throws OrderNotFoundException {
+        OrderEntryJpa orderEntry = orderRepoService.findOrderById(id);
 
         if (orderEntry != null) {
-            OrderEntry updatedOrder = orderMapperService.updateOrderEntry(orderEntry, update);
+            OrderEntryJpa updatedOrder = orderMapperService.updateOrderEntry(orderEntry, update);
 
             return orderRepoService.saveOrder(updatedOrder).getId();
         }
@@ -71,8 +71,8 @@ public class OrderService {
     }
 
     @Transactional
-    public String saveOrder(OrderData orderData) {
-        OrderEntry orderEntry = orderMapperService.mapOrderDataToOrderEntry(orderData);
+    public String saveOrder(OrderDto orderData) {
+        OrderEntryJpa orderEntry = orderMapperService.mapOrderDataToOrderEntry(orderData);
 
         return orderRepoService.saveOrder(orderEntry).getId();
     }

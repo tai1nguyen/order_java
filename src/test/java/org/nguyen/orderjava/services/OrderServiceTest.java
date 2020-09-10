@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,6 +22,7 @@ import org.nguyen.orderjava.models.OrderData;
 import org.nguyen.orderjava.models.OrderUpdateData;
 import org.nguyen.orderjava.models.jpa.InventoryEntry;
 import org.nguyen.orderjava.models.jpa.OrderEntry;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -28,7 +30,7 @@ public class OrderServiceTest {
 
     @InjectMocks
     private OrderService orderService;
-    
+
     @Mock
     private OrderRepoService orderRepoService;
 
@@ -79,9 +81,7 @@ public class OrderServiceTest {
 
         try {
             orderService.getOrderById("test");
-        }
-        catch (OrderNotFoundException ex)
-        {
+        } catch (OrderNotFoundException ex) {
             error = ex;
         }
 
@@ -115,7 +115,7 @@ public class OrderServiceTest {
         when(orderRepoService.saveOrder(any())).thenReturn(mock);
 
         orderService.updateOrder("test", mockUpdateData);
-        
+
         verify(orderMapperService, times(1)).updateOrderEntry(mock, mockUpdateData);
     }
 
@@ -142,15 +142,27 @@ public class OrderServiceTest {
 
         try {
             orderService.updateOrder("test", mockUpdateData);
+        } catch (OrderNotFoundException ex) {
+            error = ex;
+        }
+
+        assertEquals(new OrderNotFoundException("test").getMessage(), error.getMessage());
+    }
+
+    @Test
+    void deleteOrder_ShouldThrowAnException_GivenNoOrderEntryExistsForTheId() {
+        OrderNotFoundException error = null;
+
+        try {
+            doThrow(new EmptyResultDataAccessException(0)).when(orderRepoService).deleteOrderById("1");
+
+            orderService.deleteOrder("1");
         }
         catch (OrderNotFoundException ex) {
             error = ex;
         }
-        
-        assertEquals(
-            new OrderNotFoundException("test").getMessage(),
-            error.getMessage()
-        );
+
+        assertNotNull(error);
     }
 
     private OrderEntry mockOrderEntry() {

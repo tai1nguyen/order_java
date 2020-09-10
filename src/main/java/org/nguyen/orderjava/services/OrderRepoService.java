@@ -30,6 +30,10 @@ public class OrderRepoService {
         return orderEntry;
     }
 
+    public void deleteOrderById(String id) {
+        orderRepo.deleteById(id);
+    }
+
     public OrderEntry saveOrder(OrderEntry orderEntry) {
         OrderEntry savedEntity = orderRepo.save(orderEntry);
 

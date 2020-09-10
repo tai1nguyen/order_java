@@ -58,13 +58,13 @@ paths:
                   id:
                     type: string
   /order/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
     patch:
-      parameters:
-        - in: path
-          name: id
-          schema:
-            type: string
-          required: true
       summary: Updates an existing order.
       tags:
         - order
@@ -91,6 +91,22 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/OrderNotFoundException'
+    delete:
+      summary: Deletes and order.
+      description: Deletes an order tied to the provided ID.
+        Should not fail unless the database encounters an issue
+        with the removal process.
+      tags:
+        - order
+      responses:
+        '200':
+          description: Success response.
+        '404':
+          description: No order exists for the provided order ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderNotFoundException'
   /inventory/bean:
     get:
       parameters:

@@ -150,7 +150,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    void deleteById_ShouldThrowAnException_GivenNoOrderEntryExistsForTheId() {
+    void deleteOrder_ShouldThrowAnException_GivenNoOrderEntryExistsForTheId() {
         OrderNotFoundException error = null;
 
         try {

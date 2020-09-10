@@ -3,6 +3,7 @@ package org.nguyen.orderjava.controllers;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -150,5 +151,18 @@ public class OrderControllerTest {
             .body("error", equalTo("Not Found"))
             .body("message", equalTo("Order 'test' Not Found"))
             .contentType("application/json");
+    }
+
+    @Test
+    void deleteOrder_ShouldReturnStatusOk() {
+        doNothing().when(orderRepo).deleteById("1");
+
+        given()
+            .port(portNumber)
+        .when()
+            .delete("/order/1")
+        .then()
+            .assertThat()
+            .statusCode(200);
     }
 }

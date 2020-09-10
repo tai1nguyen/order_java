@@ -8,6 +8,7 @@ import org.nguyen.orderjava.models.OrderData;
 import org.nguyen.orderjava.models.OrderUpdateData;
 import org.nguyen.orderjava.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,11 @@ public class OrderController {
         String orderId = orderService.updateOrder(id, update);
 
         return getResponseJson("id", orderId);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteOrder(@PathVariable String id) throws OrderNotFoundException {
+        orderService.deleteOrder(id);
     }
 
     private Map<String, String> getResponseJson(String key, String value) {

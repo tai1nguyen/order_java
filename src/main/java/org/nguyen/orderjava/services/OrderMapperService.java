@@ -6,13 +6,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nguyen.orderjava.models.BeanType;
-import org.nguyen.orderjava.models.OrderContentData;
-import org.nguyen.orderjava.models.OrderData;
-import org.nguyen.orderjava.models.OrderUpdateData;
-import org.nguyen.orderjava.models.jpa.InventoryEntry;
-import org.nguyen.orderjava.models.jpa.OrderContentEntry;
-import org.nguyen.orderjava.models.jpa.OrderEntry;
+import org.nguyen.orderjava.models.BeanTypeEnum;
+import org.nguyen.orderjava.models.dto.OrderContentDto;
+import org.nguyen.orderjava.models.dto.OrderDto;
+import org.nguyen.orderjava.models.dto.OrderUpdateDto;
+import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
+import org.nguyen.orderjava.models.jpa.OrderContentJpa;
+import org.nguyen.orderjava.models.jpa.OrderEntryJpa;
 import org.springframework.stereotype.Service;
 
 @Service(ORDER_MAPPER_SERVICE)
@@ -26,12 +26,12 @@ public class OrderMapperService {
      * @param inventoryEntries
      * @return OrderData
      */
-    public OrderData mapOrderEntryToOrderData(String id, OrderEntry orderEntry, List<InventoryEntry> inventoryEntries) {
-        List<OrderContentEntry> orderContentEntry = orderEntry.getBeans();
-        List<OrderContentData> orderContentData = buildOrderContents(orderContentEntry);
+    public OrderDto mapOrderEntryToOrderData(String id, OrderEntryJpa orderEntry, List<InventoryEntryJpa> inventoryEntries) {
+        List<OrderContentJpa> orderContentEntry = orderEntry.getBeans();
+        List<OrderContentDto> orderContentData = buildOrderContents(orderContentEntry);
         BigDecimal price = getTotalPrice(orderContentData, inventoryEntries);
 
-        OrderData orderData = new OrderData();
+        OrderDto orderData = new OrderDto();
 
         orderData.setOrderedBy(orderEntry.getOrderedBy());
         orderData.setBeans(orderContentData);
@@ -49,12 +49,12 @@ public class OrderMapperService {
      * @param inventoryEntries
      * @return OrderEntry
      */
-    public OrderEntry mapOrderDataToOrderEntry(OrderData orderData) {
-        List<OrderContentData> beans = orderData.getBeans();
+    public OrderEntryJpa mapOrderDataToOrderEntry(OrderDto orderData) {
+        List<OrderContentDto> beans = orderData.getBeans();
 
         // The IDs of the order content entry and the order entry will be set by the JPA layer.
-        List<OrderContentEntry> contentEntryList = buildOrderContentEntries(beans);
-        OrderEntry orderEntry = buildOrderEntry(orderData, contentEntryList);
+        List<OrderContentJpa> contentEntryList = buildOrderContentEntries(beans);
+        OrderEntryJpa orderEntry = buildOrderEntry(orderData, contentEntryList);
         
         return orderEntry;
     }
@@ -65,24 +65,24 @@ public class OrderMapperService {
      * @param update
      * @return OrderEntry
      */
-    public OrderEntry updateOrderEntry(OrderEntry orderEntry, OrderUpdateData update) {
-        List<OrderContentEntry> beanAdditions = buildOrderContentEntries(update.getBeanAdditions());
-        List<OrderContentEntry> beanUpdates = buildOrderContentEntries(update.getBeanUpdates());
+    public OrderEntryJpa updateOrderEntry(OrderEntryJpa orderEntry, OrderUpdateDto update) {
+        List<OrderContentJpa> beanAdditions = buildOrderContentEntries(update.getBeanAdditions());
+        List<OrderContentJpa> beanUpdates = buildOrderContentEntries(update.getBeanUpdates());
 
         // Add beans.
-        for (OrderContentEntry beanAddition : beanAdditions) {
+        for (OrderContentJpa beanAddition : beanAdditions) {
             orderEntry.addBean(beanAddition);
         }
 
         // Remove beans.
-        for (OrderContentData beanDeletion : update.getBeanDeletions()) {
+        for (OrderContentDto beanDeletion : update.getBeanDeletions()) {
             orderEntry.removeBean(beanDeletion.getBeanType());
         }
 
         // Update beans.
-        for (OrderContentEntry bean : orderEntry.getBeans()) {
-            OrderContentEntry beanUpdate = findOrderContentByBeanType(
-                BeanType.getType(bean.getBeanType()),
+        for (OrderContentJpa bean : orderEntry.getBeans()) {
+            OrderContentJpa beanUpdate = findOrderContentByBeanType(
+                BeanTypeEnum.getType(bean.getBeanType()),
                 beanUpdates
             );
 
@@ -94,12 +94,12 @@ public class OrderMapperService {
         return orderEntry;
     }
 
-    private List<OrderContentData> buildOrderContents(List<OrderContentEntry> contentEntries) {
-        List<OrderContentData> orderContents = new ArrayList<>();
+    private List<OrderContentDto> buildOrderContents(List<OrderContentJpa> contentEntries) {
+        List<OrderContentDto> orderContents = new ArrayList<>();
         
-        for (OrderContentEntry content : contentEntries) {
-            BeanType type = BeanType.getType(content.getBeanType());
-            OrderContentData bean = new OrderContentData();
+        for (OrderContentJpa content : contentEntries) {
+            BeanTypeEnum type = BeanTypeEnum.getType(content.getBeanType());
+            OrderContentDto bean = new OrderContentDto();
 
             bean.setBeanType(type);
             bean.setQuantity(Integer.valueOf(content.getQuantity()));
@@ -109,11 +109,11 @@ public class OrderMapperService {
         return orderContents;
     }
 
-    private BigDecimal getTotalPrice(List<OrderContentData> orderContent, List<InventoryEntry> inventory) {
+    private BigDecimal getTotalPrice(List<OrderContentDto> orderContent, List<InventoryEntryJpa> inventory) {
         BigDecimal totalPrice = null;
 
-        for (OrderContentData bean : orderContent) {
-            InventoryEntry beanData = findBeanDataByType(inventory, bean.getBeanType());
+        for (OrderContentDto bean : orderContent) {
+            InventoryEntryJpa beanData = findBeanDataByType(inventory, bean.getBeanType());
             BigDecimal units = new BigDecimal(bean.getQuantity());
             BigDecimal pricePerUnit = new BigDecimal(beanData.getPricePerUnit());
             BigDecimal result = pricePerUnit.multiply(units);
@@ -129,13 +129,13 @@ public class OrderMapperService {
         return totalPrice;
     }
 
-    private List<OrderContentEntry> buildOrderContentEntries(List<OrderContentData> beans) {
-        List<OrderContentEntry> contentList = new ArrayList<>();
+    private List<OrderContentJpa> buildOrderContentEntries(List<OrderContentDto> beans) {
+        List<OrderContentJpa> contentList = new ArrayList<>();
 
         if (beans != null) {
-            for (OrderContentData bean : beans) {
-                BeanType type = bean.getBeanType();
-                OrderContentEntry contentEntry = new OrderContentEntry();
+            for (OrderContentDto bean : beans) {
+                BeanTypeEnum type = bean.getBeanType();
+                OrderContentJpa contentEntry = new OrderContentJpa();
     
                 contentEntry.setBeanType(type.getName());
                 contentEntry.setQuantity(bean.getQuantity().toString());
@@ -146,11 +146,11 @@ public class OrderMapperService {
         return contentList;
     }
 
-    private OrderEntry buildOrderEntry(OrderData orderData, List<OrderContentEntry> orderContent) {
-        OrderEntry orderEntry = new OrderEntry();
+    private OrderEntryJpa buildOrderEntry(OrderDto orderData, List<OrderContentJpa> orderContent) {
+        OrderEntryJpa orderEntry = new OrderEntryJpa();
 
         if (orderContent != null) {
-            for (OrderContentEntry content : orderContent) {
+            for (OrderContentJpa content : orderContent) {
                 orderEntry.addBean(content);
             }
         }
@@ -160,15 +160,15 @@ public class OrderMapperService {
         return orderEntry;
     }
 
-    private OrderContentEntry findOrderContentByBeanType(BeanType type, List<OrderContentEntry> orderContent) {
+    private OrderContentJpa findOrderContentByBeanType(BeanTypeEnum type, List<OrderContentJpa> orderContent) {
         return orderContent
                 .stream()
-                .filter(suspect -> type.equals(BeanType.getType(suspect.getBeanType())))
+                .filter(suspect -> type.equals(BeanTypeEnum.getType(suspect.getBeanType())))
                 .findAny()
                 .orElse(null);
     }
 
-    private InventoryEntry findBeanDataByType(List<InventoryEntry> inventory, BeanType type) {
+    private InventoryEntryJpa findBeanDataByType(List<InventoryEntryJpa> inventory, BeanTypeEnum type) {
         return inventory
                 .stream()
                 .filter(suspect -> type.equals(suspect.getBeanType()))

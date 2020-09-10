@@ -13,8 +13,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.nguyen.orderjava.models.BeanType;
-import org.nguyen.orderjava.models.jpa.InventoryEntry;
+import org.nguyen.orderjava.models.BeanTypeEnum;
+import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
 import org.nguyen.orderjava.repositories.InventoryRepository;
 import org.nguyen.orderjava.services.InventoryRepoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +41,9 @@ public class InventoryControllerTest {
 
     @Test
     void getInventoryDataForBeanType_ShouldReturnDataForBeanType_GivenBeanTypeExistsInDatabase() {
-        InventoryEntry mock = new InventoryEntry();
+        InventoryEntryJpa mock = new InventoryEntryJpa();
         
-        mock.setBeanType(BeanType.ARABICA);
+        mock.setBeanType(BeanTypeEnum.ARABICA);
         mock.setPricePerUnit("0");
         mock.setWeightPerUnit("1");
         mock.setQuantity("1");
@@ -59,7 +59,7 @@ public class InventoryControllerTest {
             .assertThat()
             .statusCode(200)
             .contentType("application/json")
-            .body("beanType", equalTo(BeanType.ARABICA.getName()))
+            .body("beanType", equalTo(BeanTypeEnum.ARABICA.getName()))
             .body("pricePerUnit", equalTo("0"))
             .body("weightPerUnit", equalTo("1"))
             .body("quantity", equalTo("1"));
@@ -67,10 +67,10 @@ public class InventoryControllerTest {
 
     @Test
     void getAllInventoryData_ShouldReturnAListOfBeanData() {
-        List<InventoryEntry> list = new ArrayList<>();
-        InventoryEntry mock = new InventoryEntry();
+        List<InventoryEntryJpa> list = new ArrayList<>();
+        InventoryEntryJpa mock = new InventoryEntryJpa();
         
-        mock.setBeanType(BeanType.ARABICA);
+        mock.setBeanType(BeanTypeEnum.ARABICA);
         mock.setPricePerUnit("0");
         mock.setWeightPerUnit("1");
         mock.setQuantity("1");
@@ -79,7 +79,7 @@ public class InventoryControllerTest {
 
         when(inventoryRepo.findAll()).thenReturn(list);
 
-        List<InventoryEntry> result = given()
+        List<InventoryEntryJpa> result = given()
             .port(portNumber)
         .when()
             .get("/inventory/beans")

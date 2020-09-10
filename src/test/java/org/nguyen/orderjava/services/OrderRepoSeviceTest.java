@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.nguyen.orderjava.models.jpa.OrderEntry;
+import org.nguyen.orderjava.models.jpa.OrderEntryJpa;
 import org.nguyen.orderjava.repositories.OrderRepository;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -26,34 +26,34 @@ public class OrderRepoSeviceTest {
 
     @Test
     void findOrderById_ShouldReturnAnOrderEntry_GivenAnOrderEntryForTheIDExists() {
-        OrderEntry expected = new OrderEntry();
+        OrderEntryJpa expected = new OrderEntryJpa();
         expected.setId("1");
 
         when(orderRepo.findById("1")).thenReturn(Optional.of(expected));
 
-        OrderEntry result = orderRepoService.findOrderById("1");
+        OrderEntryJpa result = orderRepoService.findOrderById("1");
 
         assertEquals(expected, result);
     }
 
     @Test
     void findOrderById_ShouldReturnNull_GivenOrderEntryForTheIDDoesNotExist() {
-        Optional<OrderEntry> mock = Optional.ofNullable(null);
+        Optional<OrderEntryJpa> mock = Optional.ofNullable(null);
 
         when(orderRepo.findById("1")).thenReturn(mock);
 
-        OrderEntry result = orderRepoService.findOrderById("1");
+        OrderEntryJpa result = orderRepoService.findOrderById("1");
 
         assertNull(result);
     }
 
     @Test
     void saveOrder_ShouldReturnAnOrderEntry_GivenTheSaveOperationSucceeded() {
-        OrderEntry mock = new OrderEntry();
+        OrderEntryJpa mock = new OrderEntryJpa();
 
         when(orderRepo.save(any())).thenReturn(mock);
 
-        OrderEntry result = orderRepoService.saveOrder(mock);
+        OrderEntryJpa result = orderRepoService.saveOrder(mock);
 
         assertEquals(mock, result);
     }

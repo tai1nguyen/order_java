@@ -13,11 +13,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.nguyen.orderjava.models.BeanType;
+import org.nguyen.orderjava.models.BeanTypeEnum;
 
 @Entity
 @Table(name = "ORDERS")
-public class OrderEntry {
+public class OrderEntryJpa {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -30,7 +30,7 @@ public class OrderEntry {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ORDER_ID", nullable = false)
-    List<OrderContentEntry> beans = new ArrayList<OrderContentEntry>();
+    List<OrderContentJpa> beans = new ArrayList<OrderContentJpa>();
 
     public String getId() {
         return id;
@@ -48,16 +48,16 @@ public class OrderEntry {
         this.orderedBy = orderedBy;
     }
 
-    public List<OrderContentEntry> getBeans() {
+    public List<OrderContentJpa> getBeans() {
         return beans;
     }
 
-    public void addBean(OrderContentEntry bean) {
+    public void addBean(OrderContentJpa bean) {
         this.beans.add(bean);
     }
 
-    public void removeBean(BeanType type) {
-        OrderContentEntry bean = findMatchingContentEntry(
+    public void removeBean(BeanTypeEnum type) {
+        OrderContentJpa bean = findMatchingContentEntry(
             type.getName(), this.beans
         );
 
@@ -66,8 +66,8 @@ public class OrderEntry {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof OrderEntry) {
-            OrderEntry suspect = (OrderEntry) o;
+        if (o instanceof OrderEntryJpa) {
+            OrderEntryJpa suspect = (OrderEntryJpa) o;
             return isEveryPropertyEqual(suspect) &&
                 isContentEqual(suspect.getBeans());
         }
@@ -76,16 +76,16 @@ public class OrderEntry {
         }
     }
 
-    private boolean isEveryPropertyEqual(OrderEntry suspect) {
+    private boolean isEveryPropertyEqual(OrderEntryJpa suspect) {
         return isEqual(this.id, suspect.getId()) &&
             isEqual(this.orderedBy, suspect.getOrderedBy());
     }
 
-    private boolean isContentEqual(List<OrderContentEntry> suspectContent) {
+    private boolean isContentEqual(List<OrderContentJpa> suspectContent) {
         boolean isEqual = true;
 
-        for (OrderContentEntry bean : this.beans) {
-            OrderContentEntry match = findMatchingContentEntry(bean.getBeanType(), suspectContent);
+        for (OrderContentJpa bean : this.beans) {
+            OrderContentJpa match = findMatchingContentEntry(bean.getBeanType(), suspectContent);
 
             if (match == null || !bean.equals(match)) {
                 // The suspect does not have a matching
@@ -98,8 +98,8 @@ public class OrderEntry {
         return isEqual;
     }
 
-    private OrderContentEntry findMatchingContentEntry(String type, List<OrderContentEntry> suspectContent) {
-        for (OrderContentEntry bean : suspectContent) {
+    private OrderContentJpa findMatchingContentEntry(String type, List<OrderContentJpa> suspectContent) {
+        for (OrderContentJpa bean : suspectContent) {
             if (type.equals(bean.getBeanType())) {
                 return bean;
             }

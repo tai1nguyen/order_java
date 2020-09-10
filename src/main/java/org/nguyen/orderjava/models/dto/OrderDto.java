@@ -1,11 +1,13 @@
-package org.nguyen.orderjava.models;
+package org.nguyen.orderjava.models.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class OrderData {
-    private List<OrderContentData> beans;
+import org.nguyen.orderjava.models.BeanTypeEnum;
+
+public class OrderDto {
+    private List<OrderContentDto> beans;
     private BigDecimal price = new BigDecimal(0);
     private Date orderDate;
     private Date deliveryDate;
@@ -13,11 +15,11 @@ public class OrderData {
     private String orderedBy;
     private String id;
 
-    public List<OrderContentData> getBeans() {
+    public List<OrderContentDto> getBeans() {
         return beans;
     }
 
-    public void setBeans(List<OrderContentData> beans) {
+    public void setBeans(List<OrderContentDto> beans) {
         this.beans = beans;
     }
 
@@ -71,8 +73,8 @@ public class OrderData {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof OrderData) {
-            OrderData suspect = (OrderData) o;
+        if (o instanceof OrderDto) {
+            OrderDto suspect = (OrderDto) o;
             return isEveryPropertyEqual(suspect) &&
                 isContentEqual(suspect.getBeans());
         }
@@ -81,7 +83,7 @@ public class OrderData {
         }
     }
 
-    private boolean isEveryPropertyEqual(OrderData suspect) {
+    private boolean isEveryPropertyEqual(OrderDto suspect) {
         return isEqual(this.id, suspect.getId()) &&
             isEqual(this.deliveryDate, suspect.getDeliveryDate()) &&
             isEqual(this.orderedBy, suspect.getOrderedBy()) &&
@@ -91,11 +93,11 @@ public class OrderData {
             
     }
 
-    private boolean isContentEqual(List<OrderContentData> suspectContent) {
+    private boolean isContentEqual(List<OrderContentDto> suspectContent) {
         boolean isEqual = true;
 
-        for (OrderContentData bean : this.beans) {
-            OrderContentData match = findMatchingOrderContent(bean.getBeanType(), suspectContent);
+        for (OrderContentDto bean : this.beans) {
+            OrderContentDto match = findMatchingOrderContent(bean.getBeanType(), suspectContent);
 
             if (match == null || !bean.equals(match)) {
                 // The suspect does not have a matching
@@ -108,8 +110,8 @@ public class OrderData {
         return isEqual;
     }
 
-    private OrderContentData findMatchingOrderContent(BeanType type, List<OrderContentData> suspectContent) {
-        for (OrderContentData bean : suspectContent) {
+    private OrderContentDto findMatchingOrderContent(BeanTypeEnum type, List<OrderContentDto> suspectContent) {
+        for (OrderContentDto bean : suspectContent) {
             if (type.equals(bean.getBeanType())) {
                 return bean;
             }

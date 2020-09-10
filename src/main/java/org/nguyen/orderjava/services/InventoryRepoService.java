@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.nguyen.orderjava.models.BeanType;
-import org.nguyen.orderjava.models.jpa.InventoryEntry;
+import org.nguyen.orderjava.models.BeanTypeEnum;
+import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
 import org.nguyen.orderjava.repositories.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,9 @@ public class InventoryRepoService {
         this.inventoryRepo = inventoryRepository;
     }
 
-    public InventoryEntry findEntryByType(BeanType beanType) {
-        InventoryEntry result = null;
-        Optional<InventoryEntry> entry = inventoryRepo.findById(beanType.getName());
+    public InventoryEntryJpa findEntryByType(BeanTypeEnum beanType) {
+        InventoryEntryJpa result = null;
+        Optional<InventoryEntryJpa> entry = inventoryRepo.findById(beanType.getName());
 
         if (entry.isPresent()) {
             result = entry.get();
@@ -33,12 +33,12 @@ public class InventoryRepoService {
         return result;
     }
 
-    public List<InventoryEntry> findAllEntries() {
-        List<InventoryEntry> inventory = new ArrayList<InventoryEntry>();
+    public List<InventoryEntryJpa> findAllEntries() {
+        List<InventoryEntryJpa> inventory = new ArrayList<InventoryEntryJpa>();
 
-        Iterable<InventoryEntry> iterator = inventoryRepo.findAll();
+        Iterable<InventoryEntryJpa> iterator = inventoryRepo.findAll();
 
-        for (InventoryEntry entry : iterator) {
+        for (InventoryEntryJpa entry : iterator) {
             inventory.add(entry);
         }
 

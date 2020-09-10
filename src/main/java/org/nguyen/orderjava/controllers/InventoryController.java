@@ -2,8 +2,8 @@ package org.nguyen.orderjava.controllers;
 
 import java.util.List;
 
-import org.nguyen.orderjava.models.BeanType;
-import org.nguyen.orderjava.models.jpa.InventoryEntry;
+import org.nguyen.orderjava.models.BeanTypeEnum;
+import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
 import org.nguyen.orderjava.services.InventoryRepoService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,14 +21,14 @@ public class InventoryController {
     }
 
     @GetMapping("/bean")
-    public InventoryEntry getInventoryDataForBeanType(@RequestParam String type) {
-        InventoryEntry entry = inventoryRepoService.findEntryByType(BeanType.getType(type));
+    public InventoryEntryJpa getInventoryDataForBeanType(@RequestParam String type) {
+        InventoryEntryJpa entry = inventoryRepoService.findEntryByType(BeanTypeEnum.getType(type));
 
         return entry;
     }
 
     @GetMapping("/beans")
-    public List<InventoryEntry> getInventory() {
+    public List<InventoryEntryJpa> getInventory() {
         return inventoryRepoService.findAllEntries();
     }
 }

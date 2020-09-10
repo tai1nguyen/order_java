@@ -29,7 +29,7 @@ paths:
           content:
             application/json:
               schema: 
-                $ref: '#/components/schemas/OrderData'
+                $ref: '#/components/schemas/OrderDto'
         '404':
           description: No order exists for the provided order ID.
           content:
@@ -46,7 +46,7 @@ paths:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/OrderData'
+              $ref: '#/components/schemas/OrderDto'
       responses:
         '200':
           description: A JSON object containing the order ID.
@@ -74,7 +74,7 @@ paths:
         content:
           application/json:
             schema: 
-              $ref: '#/components/schemas/OrderUpdate'
+              $ref: '#/components/schemas/OrderUpdateDto'
       responses:
         '200':
           description: A JSON object containing the order ID.
@@ -124,7 +124,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InventoryData'
+                $ref: '#/components/schemas/InventoryEntryJpa'
   /inventory/beans:
     get:
       summary: Return inventory information for all beans.
@@ -138,10 +138,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/InventoryData'
+                  $ref: '#/components/schemas/InventoryEntryJpa'
 components:
   schemas:
-    OrderData:
+    OrderDto:
       type: object
       properties:
         price:
@@ -159,8 +159,8 @@ components:
         beans:
           type: array
           items: 
-            $ref: '#/components/schemas/OrderContent'
-    OrderContent:
+            $ref: '#/components/schemas/OrderContentDto'
+    OrderContentDto:
       type: object
       properties:
         quantity:
@@ -168,7 +168,7 @@ components:
         beanType:
           type: string
           enum: [ ARABICA, ROBUSTA, LIBERIAN, EXCELSA ]
-    InventoryData:
+    InventoryEntryJpa:
       type: object
       properties:
         weightPerUnit:
@@ -180,21 +180,21 @@ components:
         beanType:
           type: string
           enum: [ ARABICA, ROBUSTA, LIBERIAN, EXCELSA ]
-    OrderUpdate:
+    OrderUpdateDto:
       type: object
       properties:
         beanAdditions:
           type: array
           items:
-            $ref: '#/components/schemas/OrderContent'
+            $ref: '#/components/schemas/OrderContentDto'
         beanDeletions:
           type: array
           items:
-            $ref: '#/components/schemas/OrderContent'
+            $ref: '#/components/schemas/OrderContentDto'
         beanUpdates:
           type: array
           items:
-            $ref: '#/components/schemas/OrderContent'
+            $ref: '#/components/schemas/OrderContentDto'
         changeDate:
           type: string
     OrderNotFoundException:

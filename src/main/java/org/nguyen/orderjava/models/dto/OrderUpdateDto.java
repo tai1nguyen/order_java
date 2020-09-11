@@ -4,6 +4,8 @@ package org.nguyen.orderjava.models.dto;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 public class OrderUpdateDto {
     private List<OrderContentDto> beanAdditions;
     private List<OrderContentDto> beanDeletions;
@@ -40,5 +42,10 @@ public class OrderUpdateDto {
 
     public void setChangeDate(Date changeDate) {
         this.changeDate = changeDate;
+    }
+
+    @Override
+    public boolean equals(Object suspect) {
+        return EqualsBuilder.reflectionEquals(this, suspect);
     }
 }

@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.nguyen.orderjava.models.BeanTypeEnum;
 
 @Entity
@@ -54,5 +56,15 @@ public class InventoryEntryJpa {
 
     public void setQuantity(String quantity) {
 		this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object suspect) {
+        return EqualsBuilder.reflectionEquals(this, suspect);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.nguyen.orderjava.models.BeanTypeEnum;
 
@@ -57,7 +59,7 @@ public class OrderEntryJpa {
     }
 
     public void removeBean(BeanTypeEnum type) {
-        OrderContentJpa bean = findMatchingContentEntry(
+        OrderContentJpa bean = findMatchingContent(
             type.getName(), this.beans
         );
 
@@ -65,55 +67,22 @@ public class OrderEntryJpa {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof OrderEntryJpa) {
-            OrderEntryJpa suspect = (OrderEntryJpa) o;
-            return isEveryPropertyEqual(suspect) &&
-                isContentEqual(suspect.getBeans());
-        }
-        else {
-            return false;
-        }
+    public boolean equals(Object suspect) {
+        return EqualsBuilder.reflectionEquals(this, suspect);
     }
 
-    private boolean isEveryPropertyEqual(OrderEntryJpa suspect) {
-        return isEqual(this.id, suspect.getId()) &&
-            isEqual(this.orderedBy, suspect.getOrderedBy());
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
-    private boolean isContentEqual(List<OrderContentJpa> suspectContent) {
-        boolean isEqual = true;
-
-        for (OrderContentJpa bean : this.beans) {
-            OrderContentJpa match = findMatchingContentEntry(bean.getBeanType(), suspectContent);
-
-            if (match == null || !bean.equals(match)) {
-                // The suspect does not have a matching
-                // bean entry. It is therefore not equal.
-                isEqual = false;
-                break;
-            }
-        }
-
-        return isEqual;
-    }
-
-    private OrderContentJpa findMatchingContentEntry(String type, List<OrderContentJpa> suspectContent) {
+    private OrderContentJpa findMatchingContent(String type, List<OrderContentJpa> suspectContent) {
         for (OrderContentJpa bean : suspectContent) {
-            if (type.equals(bean.getBeanType())) {
+            if (bean.getBeanType().equals(type)) {
                 return bean;
             }
         }
 
         return null;
-    }
-
-    private boolean isEqual(Object expected, Object suspect) {
-        if (expected != null) {
-            return expected.equals(suspect);
-        }
-        else {
-            return expected == suspect;
-        }
     }
 }

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import org.nguyen.orderjava.models.BeanTypeEnum;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 public class OrderDto {
     private List<OrderContentDto> beans;
@@ -72,60 +72,7 @@ public class OrderDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof OrderDto) {
-            OrderDto suspect = (OrderDto) o;
-            return isEveryPropertyEqual(suspect) &&
-                isContentEqual(suspect.getBeans());
-        }
-        else {
-            return false;
-        }
-    }
-
-    private boolean isEveryPropertyEqual(OrderDto suspect) {
-        return isEqual(this.id, suspect.getId()) &&
-            isEqual(this.deliveryDate, suspect.getDeliveryDate()) &&
-            isEqual(this.orderedBy, suspect.getOrderedBy()) &&
-            isEqual(this.orderDate, suspect.getOrderDate()) &&
-            isEqual(this.isComplete, suspect.isComplete()) &&
-            isEqual(this.price, suspect.getPrice());
-            
-    }
-
-    private boolean isContentEqual(List<OrderContentDto> suspectContent) {
-        boolean isEqual = true;
-
-        for (OrderContentDto bean : this.beans) {
-            OrderContentDto match = findMatchingOrderContent(bean.getBeanType(), suspectContent);
-
-            if (match == null || !bean.equals(match)) {
-                // The suspect does not have a matching
-                // bean entry. It is therefore not equal.
-                isEqual = false;
-                break;
-            }
-        }
-
-        return isEqual;
-    }
-
-    private OrderContentDto findMatchingOrderContent(BeanTypeEnum type, List<OrderContentDto> suspectContent) {
-        for (OrderContentDto bean : suspectContent) {
-            if (type.equals(bean.getBeanType())) {
-                return bean;
-            }
-        }
-
-        return null;
-    }
-
-    private boolean isEqual(Object expected, Object suspect) {
-        if (expected != null) {
-            return expected.equals(suspect);
-        }
-        else {
-            return expected == suspect;
-        }
+    public boolean equals(Object suspect) {
+        return EqualsBuilder.reflectionEquals(this, suspect);
     }
 }

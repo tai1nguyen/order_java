@@ -1,5 +1,6 @@
 package org.nguyen.orderjava.models.dto;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.nguyen.orderjava.models.BeanTypeEnum;
 
 public class OrderContentDto {
@@ -23,27 +24,7 @@ public class OrderContentDto {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof OrderContentDto) {
-            OrderContentDto suspect = (OrderContentDto) o;
-            return isEveryPropertyEqual(suspect);
-        }
-        else {
-            return false;
-        }
-    }
-
-    private boolean isEveryPropertyEqual(OrderContentDto suspect) {
-        return isEqual(this.beanType, suspect.getBeanType()) &&
-            isEqual(this.quantity, suspect.getQuantity());
-    }
-
-    private boolean isEqual(Object expected, Object suspect) {
-        if (expected != null) {
-            return expected.equals(suspect);
-        }
-        else {
-            return expected == suspect;
-        }
+    public boolean equals(Object suspect) {
+        return EqualsBuilder.reflectionEquals(this, suspect);
     }
 }

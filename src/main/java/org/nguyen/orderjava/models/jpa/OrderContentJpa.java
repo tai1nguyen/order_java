@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -49,28 +51,12 @@ public class OrderContentJpa {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof OrderContentJpa) {
-            OrderContentJpa suspect = (OrderContentJpa) o;
-            return isEveryPropertyEqual(suspect);
-        }
-        else {
-            return false;
-        }
+    public boolean equals(Object suspect) {
+        return EqualsBuilder.reflectionEquals(this, suspect);
     }
 
-    private boolean isEveryPropertyEqual(OrderContentJpa suspect) {
-        return isEqual(this.id, suspect.getId()) &&
-            isEqual(this.beanType, suspect.getBeanType()) &&
-            isEqual(this.quantity, suspect.getQuantity());
-    }
-
-    private boolean isEqual(Object expected, Object suspect) {
-        if (expected != null) {
-            return expected.equals(suspect);
-        }
-        else {
-            return expected == suspect;
-        }
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

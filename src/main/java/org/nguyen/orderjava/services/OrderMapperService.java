@@ -24,7 +24,7 @@ public class OrderMapperService {
      * @param id
      * @param orderEntry
      * @param inventoryEntries
-     * @return OrderData
+     * @return @Class{OrderDto}
      */
     public OrderDto mapOrderEntryToOrderData(String id, OrderEntryJpa orderEntry, List<InventoryEntryJpa> inventoryEntries) {
         List<OrderContentJpa> orderContentEntry = orderEntry.getBeans();
@@ -47,7 +47,7 @@ public class OrderMapperService {
      * an object that can be consumed by the JPA layer.
      * @param orderData
      * @param inventoryEntries
-     * @return OrderEntry
+     * @return @Class{OrderEntryJpa}
      */
     public OrderEntryJpa mapOrderDataToOrderEntry(OrderDto orderData) {
         List<OrderContentDto> beans = orderData.getBeans();
@@ -63,7 +63,7 @@ public class OrderMapperService {
      * Takes an order entry and updates it with the provided order update data.
      * @param orderEntry
      * @param update
-     * @return OrderEntry
+     * @return @Class{OrderEntryJpa}
      */
     public OrderEntryJpa updateOrderEntry(OrderEntryJpa orderEntry, OrderUpdateDto update) {
         List<OrderContentJpa> beanAdditions = buildOrderContentEntries(update.getBeanAdditions());

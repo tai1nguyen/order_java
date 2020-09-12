@@ -5,6 +5,7 @@ import java.util.List;
 import org.nguyen.orderjava.models.BeanTypeEnum;
 import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
 import org.nguyen.orderjava.services.InventoryRepoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ public class InventoryController {
 
     private final InventoryRepoService inventoryRepoService;
 
+    @Autowired
     InventoryController(InventoryRepoService inventoryRepoService) {
         this.inventoryRepoService = inventoryRepoService;
     }

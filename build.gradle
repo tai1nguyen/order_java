@@ -1,12 +1,12 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.4.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'org.springframework.boot' version '2.4.1'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
 }
 
 group = 'org.nguyen'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '13'
+sourceCompatibility = '15'
 
 repositories {
 	mavenCentral()
@@ -23,11 +23,7 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:4.2.0'
     testImplementation 'io.rest-assured:json-path:4.2.0'
     testImplementation 'io.rest-assured:xml-path:4.2.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.0'
-    testImplementation 'org.junit.platform:junit-platform-launcher'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'junit', module: 'junit'
-	}
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {

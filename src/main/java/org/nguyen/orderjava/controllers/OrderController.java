@@ -46,9 +46,16 @@ public class OrderController {
         @PathVariable String id,
         @RequestBody OrderUpdateDto update
     ) throws OrderNotFoundException {
-        String orderId = orderService.updateOrder(id, update);
+        try {
+            String orderId = orderService.updateOrder(id, update);
+            
+            return getResponseJson("id", orderId);
+        }
+        catch (OrderNotFoundException notFound) {
+            System.out.println(notFound.getMessage());
 
-        return getResponseJson("id", orderId);
+            throw notFound;
+        }
     }
 
     @DeleteMapping("/{id}")

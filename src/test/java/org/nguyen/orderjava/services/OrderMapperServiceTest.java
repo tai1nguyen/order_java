@@ -1,13 +1,12 @@
 package org.nguyen.orderjava.services;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.nguyen.orderjava.models.BeanTypeEnum;
 import org.nguyen.orderjava.models.dto.OrderContentDto;
@@ -16,9 +15,9 @@ import org.nguyen.orderjava.models.dto.OrderUpdateDto;
 import org.nguyen.orderjava.models.jpa.InventoryEntryJpa;
 import org.nguyen.orderjava.models.jpa.OrderContentJpa;
 import org.nguyen.orderjava.models.jpa.OrderEntryJpa;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class OrderMapperServiceTest {
 
     @InjectMocks
